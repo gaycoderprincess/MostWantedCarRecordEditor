@@ -16,7 +16,7 @@ auto GetUserProfile() {
 std::string lastState;
 
 void AddCarToCareer(uint32_t handle) {
-	auto cars = &GetUserProfile()->mCarStable;
+	auto cars = &GetUserProfile()->PlayersCarStable;
 	if (auto out = cars->CreateNewCareerCar(cars, handle)) {
 		lastState = "Car added to career";
 		return;
@@ -78,7 +78,7 @@ void PresetCarEditor() {
 		return;
 	}
 
-	auto cars = &GetUserProfile()->mCarStable;
+	auto cars = &GetUserProfile()->PlayersCarStable;
 
 	if (DrawMenuOption("Cars")) {
 		ChloeMenuLib::BeginMenu();
@@ -113,7 +113,7 @@ void PresetCarEditor() {
 					*customization = CopiedCustomizations;
 				}
 
-				if (auto career = FEPlayerCarDB::GetCareerRecordByHandle(cars, car.CareerHandle); DrawMenuOption("Career Stats")) {
+				if (auto career = FEPlayerCarDB::GetCareerRecordByHandle(cars, car.CareerHandle); career && DrawMenuOption("Career Stats")) {
 					ChloeMenuLib::BeginMenu();
 
 					QuickValueEditor("mMaxBusted", career->TheImpoundData.mMaxBusted);
@@ -134,6 +134,19 @@ void PresetCarEditor() {
 			}
 		}
 
+		ChloeMenuLib::EndMenu();
+	}
+
+	if (DrawMenuOption("Add Preset Car Manually")) {
+		ChloeMenuLib::BeginMenu();
+		static char tmp[1024] = "";
+		ChloeMenuLib::AddTextInputToString(tmp, 1024, false);
+		DrawMenuOption(std::format("Name: {}", tmp));
+		if (tmp[0]) {
+			if (DrawMenuOption("Add Car")) {
+				FEPlayerCarDB::CreateNewPresetCar(cars, tmp);
+			}
+		}
 		ChloeMenuLib::EndMenu();
 	}
 
@@ -164,7 +177,7 @@ void PresetCarEditor() {
 				"RELEASE_IMPOUND",
 		};
 
-		for (int i = FEMarkerManager::MARKER_FIRST; i <= FEMarkerManager::MARKER_RELEASE_IMPOUND; i++) {
+		for (int i = FEMarkerManager::MARKER_FIRST; i <= FEMarkerManager::MARKER_IMPOUND_RELEASE; i++) {
 			int count = FEMarkerManager::GetNumMarkers(&TheFEMarkerManager, i, 0);
 			if (DrawMenuOption(std::format("Add {} Marker ({})", markerNames[i-1], count))) {
 				FEMarkerManager::AddMarkerToInventory(&TheFEMarkerManager, i, 0);
