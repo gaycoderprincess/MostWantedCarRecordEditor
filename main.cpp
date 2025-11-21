@@ -113,6 +113,20 @@ void PresetCarEditor() {
 					*customization = CopiedCustomizations;
 				}
 
+				if (customization && DrawMenuOption("Tuning")) {
+					ChloeMenuLib::BeginMenu();
+
+					QuickValueEditor("InstalledPhysics.TIRES", customization->InstalledPhysics.Part[0]);
+					QuickValueEditor("InstalledPhysics.BRAKES", customization->InstalledPhysics.Part[1]);
+					QuickValueEditor("InstalledPhysics.CHASSIS", customization->InstalledPhysics.Part[2]);
+					QuickValueEditor("InstalledPhysics.TRANSMISSION", customization->InstalledPhysics.Part[3]);
+					QuickValueEditor("InstalledPhysics.ENGINE", customization->InstalledPhysics.Part[4]);
+					QuickValueEditor("InstalledPhysics.INDUCTION", customization->InstalledPhysics.Part[5]);
+					QuickValueEditor("InstalledPhysics.NOS", customization->InstalledPhysics.Part[6]);
+
+					ChloeMenuLib::EndMenu();
+				}
+
 				if (auto career = FEPlayerCarDB::GetCareerRecordByHandle(cars, car.CareerHandle); career && DrawMenuOption("Career Stats")) {
 					ChloeMenuLib::BeginMenu();
 
@@ -134,6 +148,18 @@ void PresetCarEditor() {
 			}
 		}
 
+		ChloeMenuLib::EndMenu();
+	}
+
+	if (DrawMenuOption("Preset Cars")) {
+		ChloeMenuLib::BeginMenu();
+		auto car = (PresetCar*)PresetCarList.HeadNode;
+		while (car != (PresetCar*)&PresetCarList) {
+			if (DrawMenuOption(car->PresetName)) {
+				FEPlayerCarDB::CreateNewPresetCar(cars, car->PresetName);
+			}
+			car = car->Next;
+		}
 		ChloeMenuLib::EndMenu();
 	}
 
