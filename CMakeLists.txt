@@ -17,7 +17,7 @@ add_library(NFSMWCarRecordEditor SHARED main.cpp)
 target_include_directories(NFSMWCarRecordEditor PUBLIC ../nya-common)
 target_include_directories(NFSMWCarRecordEditor PUBLIC ../nya-common/3rdparty)
 target_include_directories(NFSMWCarRecordEditor PUBLIC ../nya-common-nfsmw)
-target_include_directories(NFSMWCarRecordEditor PUBLIC ../FlatOutUCMenuLib)
+target_include_directories(NFSMWCarRecordEditor PUBLIC ../CwoeeMenuLib)
 target_link_options(NFSMWCarRecordEditor PRIVATE "-Wl,--exclude-all-symbols")
 
 set_target_properties(NFSMWCarRecordEditor PROPERTIES PREFIX "")
