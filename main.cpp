@@ -153,10 +153,25 @@ void PresetCarEditor() {
 
 	if (DrawMenuOption("Preset Cars")) {
 		ChloeMenuLib::BeginMenu();
-		auto car = (PresetCar*)PresetCarList.HeadNode;
+		auto car = *(PresetCar**)&PresetCarList.HeadNode;
 		while (car != (PresetCar*)&PresetCarList) {
 			if (DrawMenuOption(car->PresetName)) {
-				FEPlayerCarDB::CreateNewPresetCar(cars, car->PresetName);
+				auto handle = FEHashUpper(car->PresetName);
+
+				bool found = false;
+				for (auto& record : cars->CarTable) {
+					if (record.Handle == handle) {
+						found = true;
+					}
+				}
+				if (!found) {
+					FEPlayerCarDB::CreateNewPresetCar(cars, car->PresetName);
+				}
+
+				static RideInfo info;
+				RideInfo::Init(&info, -1, CarRenderUsage_Player, false, false);
+				FEPlayerCarDB::BuildRideForPlayer(cars, handle, 0, &info);
+				GarageMainScreen::SetRideInfo(GarageMainScreen::GetInstance(), &info, 0);
 			}
 			car = car->Next;
 		}
