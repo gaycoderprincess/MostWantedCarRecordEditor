@@ -10,7 +10,7 @@
 #include "include/chloemenulib.h"
 
 auto GetUserProfile() {
-	return FEDatabase->mUserProfile;
+	return FEDatabase->CurrentUserProfiles[0];
 }
 
 std::string lastState;
@@ -111,6 +111,16 @@ void PresetCarEditor() {
 
 				if (customization && bCopiedCustomizationsValid && DrawMenuOption("Paste Tuning")) {
 					*customization = CopiedCustomizations;
+				}
+
+				if (customization && DrawMenuOption("Write Tuning To File")) {
+					std::ofstream file(std::format("car{}_{}", &car - &cars->CarTable[0], FECarRecord::GetDebugName(&car)), std::ios::out | std::ios::binary);
+
+					auto preset = NyaHelpers::CreatePresetCar(&car, customization, "TEMP");
+					file.write((char*)&preset, sizeof(preset));
+
+					file.flush();
+					file.close();
 				}
 
 				if (customization && DrawMenuOption("Tuning")) {
